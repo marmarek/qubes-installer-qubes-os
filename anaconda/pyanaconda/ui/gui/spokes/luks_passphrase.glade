@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.2"/>
+  <requires lib="AnacondaWidgets" version="1.0"/>
+  <object class="AnacondaStandaloneWindow" id="LUKSPassphraseWindow">
+    <property name="can_focus">False</property>
+    <property name="window_name" translatable="yes">LUKS PASSWORD</property>
+    <signal name="show" handler="on_show" swapped="no"/>
+  </object>
+</interface>
