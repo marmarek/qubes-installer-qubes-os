@@ -1,0 +1,7 @@
+#!/usr/bin/python3
+
+from pylorax.imgutils import mkdosimg
+import sys
+
+if __name__ == '__main__':
+    mkdosimg(sys.argv[1], sys.argv[2])

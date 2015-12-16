@@ -30,6 +30,8 @@ Lorax templates for Qubes installation ISO.
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/usr/share/lorax-qubes
 cp -r templates/* $RPM_BUILD_ROOT/usr/share/lorax-qubes/
+install -d $RPM_BUILD_ROOT/usr/bin
+install mkdosimg $RPM_BUILD_ROOT/usr/bin/mkdosimg
 
 %post
 # pungi does not allow to specify alternative config, so must override the default one
@@ -46,6 +48,7 @@ EOF
 %files
 %defattr(-,root,root,-)
 /usr/share/lorax-qubes
+/usr/bin/mkdosimg
 
 
 %changelog
