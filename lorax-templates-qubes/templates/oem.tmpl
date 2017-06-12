@@ -1,0 +1,39 @@
+<%page args="configdir, BOOTDIR, SYSLINUXDIR, efiarch, isolabel, product, outroot"/>
+<%
+OEMDIR="OEM"
+EFIBOOTDIR="EFI/BOOT"
+OEMEFIBOOTDIR=OEMDIR+"/EFI/BOOT"
+%>
+
+mkdir ${OEMDIR}
+hardlink ${BOOTDIR}/vmlinuz ${OEMDIR}
+hardlink ${BOOTDIR}/initrd.img ${OEMDIR}
+hardlink ${BOOTDIR}/xen.gz ${OEMDIR}
+install ${SYSLINUXDIR}/isolinux.bin ${OEMDIR}
+install ${SYSLINUXDIR}/vesamenu.c32 ${OEMDIR}
+install ${SYSLINUXDIR}/mboot.c32 ${OEMDIR}
+install ${configdir}/oem-syslinux.cfg ${OEMDIR}/syslinux.cfg
+install ${configdir}/boot.msg ${OEMDIR}
+install usr/share/anaconda/boot/syslinux-splash.png ${OEMDIR}/splash.png
+
+replace @VERSION@ ${product.version} ${OEMDIR}/syslinux.cfg ${OEMDIR}/*.msg
+replace @PRODUCT@ '${product.name}'  ${OEMDIR}/syslinux.cfg ${OEMDIR}/*.msg
+replace @ROOT@ 'inst.stage2=hd:LABEL=${isolabel|udev}' ${OEMDIR}/syslinux.cfg
+
+mkdir ${OEMDIR}/EFI
+mkdir ${OEMEFIBOOTDIR}
+hardlink ${EFIBOOTDIR}/BOOT${efiarch}.efi ${OEMEFIBOOTDIR}
+hardlink ${EFIBOOTDIR}/xen.efi ${OEMEFIBOOTDIR}
+hardlink ${BOOTDIR}/vmlinuz ${OEMEFIBOOTDIR}
+hardlink ${BOOTDIR}/initrd.img ${OEMEFIBOOTDIR}
+install ${configdir}/grub2-efi.cfg ${OEMEFIBOOTDIR}/grub.cfg
+install ${configdir}/xen-efi.cfg ${OEMEFIBOOTDIR}/xen.cfg
+replace @PRODUCT@ '${product.name}' ${OEMEFIBOOTDIR}/grub.cfg
+replace @VERSION@ ${product.version} ${OEMEFIBOOTDIR}/grub.cfg
+replace @EFIDIR@ /${EFIBOOTDIR} ${OEMEFIBOOTDIR}/grub.cfg
+replace @ROOT@ 'inst.stage2=hd:LABEL=${isolabel|udev} ks=hd:/dev/sda1' ${OEMEFIBOOTDIR}/xen.cfg
+
+# bypass "chroot" enforced by Lorax parser
+install ../../../../conf/oem-kickstart.cfg ${OEMDIR}/ks.cfg
+runcmd mkdosimg ${outroot}/${OEMDIR} ${outroot}/images/oem.img
+runcmd syslinux -i ${outroot}/images/oem.img

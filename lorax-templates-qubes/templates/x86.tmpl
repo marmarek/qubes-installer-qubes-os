@@ -103,3 +103,6 @@ hardlink ${KERNELDIR}/initrd.img ${BOOTDIR}
 ##        ${efigraft}
 ## runcmd isohybrid ${efihybrid} ${outroot}/images/boot.iso
 ## treeinfo images-${basearch} boot.iso images/boot.iso
+
+## make oem.img
+<%include file="oem.tmpl" args="configdir=configdir, BOOTDIR=BOOTDIR, SYSLINUXDIR=SYSLINUXDIR, efiarch=efiarch, isolabel=isolabel, product=product, outroot=outroot"/>
